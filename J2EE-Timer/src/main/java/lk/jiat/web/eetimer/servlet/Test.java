@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.jiat.web.eetimer.ejb.TaskSessionBean;
 import lk.jiat.web.eetimer.ejb.TimerSessionBean;
+import lk.jiat.web.eetimer.timer.Task;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,9 @@ public class Test extends HttpServlet {
 //            throw new RuntimeException(e);
 //        }
 
-        timerSessionBean.doTask();
+         Task task = timerSessionBean.doTask(20000);
+        System.out.println("Task is Schedule "+task.getTaskId());
+
+        request.getSession().setAttribute("task" , task);
     }
 }

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lk.jiat.web.eetimer.ejb.TimerSessionBean;
+import lk.jiat.web.eetimer.timer.Task;
 
 import java.io.IOException;
 
@@ -17,8 +18,16 @@ public class Test2 extends HttpServlet {
     TimerSessionBean timerSessionBean;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        timerSessionBean.cancelTimer();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        if (request.getSession().getAttribute("task") != null) {
+            Task task = (Task) request.getSession().getAttribute("task");
+            timerSessionBean.cancelTimer(task.getTaskId());
+
+        }
+
+
+
 
     }
 }

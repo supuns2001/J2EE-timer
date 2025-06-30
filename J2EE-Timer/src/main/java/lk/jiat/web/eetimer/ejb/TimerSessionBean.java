@@ -2,8 +2,10 @@ package lk.jiat.web.eetimer.ejb;
 
 import jakarta.annotation.Resource;
 import jakarta.ejb.*;
+import lk.jiat.web.eetimer.timer.Task;
 
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.UUID;
 
 @Stateless
 public class TimerSessionBean {
@@ -13,29 +15,59 @@ public class TimerSessionBean {
 
 
 
-    public void doTask(){
+    public Task doTask(long time){
 
-        timerService.createTimer( 5000 , "Clock");
 
         TimerConfig timerConfig = new TimerConfig();
-        timerConfig.getInfo();
 
-        timerService.createSingleActionTimer(5000, timerConfig);
+        String taskId = UUID.randomUUID().toString();
+        Task task  = new Task(taskId, "Test Task");
+        timerConfig.setInfo(task);
+        timerConfig.setPersistent(false);
 
-         Collection<Timer> allTimers = timerService.getAllTimers();
-         allTimers.forEach(timer->{
+//        timerService.createSingleActionTimer(time, timerConfig);
 
-         });
+        ScheduleExpression expression = new ScheduleExpression();
+        expression.dayOfWeek("MON-FRI");
+
+        //expression.dayOfMonth("L"); //last day of month
+
+        timerService.createCalendarTimer(expression , timerConfig);
+
+        return task;
     }
 
 
     @Timeout
-    public void  timeOutTask(Timer timer){
-        System.out.println("ok.. " + timer);
+    public void  timeOutTask1(Timer timer){
+        Serializable info = timer.getInfo();
+        if (info instanceof Task) {
+            Task task = (Task) info;
+            System.out.println(task.getTaskName()+" : "+ task.getTaskId() +" = Task is Done");
+        }
     }
 
-    public void cancelTimer(){
-//        if (timer != null) {
+    public void cancelTimer(String taskId){
+
+        for (Timer timer : timerService.getTimers()) {
+            if (timer.getInfo() instanceof  Task && ((Task) timer.getInfo()).getTaskId().equals(taskId)) {
+                timer.cancel();
+                System.out.println("Task id is canceled" + taskId);
+                break;
+            }
+        }
+
+
+//        timerService.getAllTimers().forEach(timer->{
+//
+//            Task task = (Task) timer.getInfo();
+//            if ( task.getTaskId().equals(taskId)) {
+//                timer.cancel();
+//
+//            }
+//        });
+//
+        //        if (timer != null) {
 //            timer.cancel();
 //        }
     }
