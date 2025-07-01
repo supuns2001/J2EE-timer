@@ -10,7 +10,7 @@ public class AutoTimerSessionBean {
     @Schedules({
             @Schedule(hour = "21",minute = "3",second = "10" , persistent = false)  ,
             @Schedule(hour = "21",minute = "3",second = "10" , persistent = false)  ,
-            @Schedule(hour = "21",minute = "3",second = "10" , persistent = false)  , 
+            @Schedule(hour = "21",minute = "3",second = "10" , persistent = false)  ,
             @Schedule(hour = "21",minute = "3",second = "10" , persistent = false)
     })
 
